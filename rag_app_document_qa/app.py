@@ -51,7 +51,7 @@ def data_ingestion():
 
 # Vector Embeddings and Vector Store
 
-FAISS_INDEX_PATH = "faiss_index"
+FAISS_INDEX_PATH = "rag_app_document_qa/faiss_index"
 
 
 def create_vector_store(docs):
