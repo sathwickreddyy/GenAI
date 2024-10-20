@@ -51,7 +51,8 @@ def data_ingestion():
 
 # Vector Embeddings and Vector Store
 
-FAISS_INDEX_PATH="faiss_index"
+FAISS_INDEX_PATH = "faiss_index"
+
 
 def create_vector_store(docs):
     vector_store_faiss = FAISS.from_documents(docs, bedrock_embeddings)
@@ -72,6 +73,13 @@ def get_mistral_llm():
     # Create Mistral Model
     llm = BedrockLLM(model_id="mistral.mistral-large-2402-v1:0", client=bedrock, model_kwargs={
         "max_tokens": 512,
+    })
+    return llm
+
+
+def get_aws_titan_llm():
+    llm = BedrockLLM(model_id="amazon.titan-text-express-v1", client=bedrock, model_kwargs={
+        "maxTokenCount": 512,
     })
     return llm
 
@@ -126,6 +134,14 @@ def main():
         with st.spinner("Processing ..."):
             faiss_index = FAISS.load_local(FAISS_INDEX_PATH, bedrock_embeddings, allow_dangerous_deserialization=True)
             llm = get_mistral_llm()
+
+            st.write(get_response_llm(llm, faiss_index, user_question))
+            st.success("Done!")
+
+    if st.button("Amazon Titan LLM Output"):
+        with st.spinner("Processing ..."):
+            faiss_index = FAISS.load_local(FAISS_INDEX_PATH, bedrock_embeddings, allow_dangerous_deserialization=True)
+            llm = get_aws_titan_llm()
 
             st.write(get_response_llm(llm, faiss_index, user_question))
             st.success("Done!")
